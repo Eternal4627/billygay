@@ -25,17 +25,15 @@ local lib = loadstring(game:HttpGet("https://raw.githubusercontent.com/Babyhamst
 local ESP = loadstring(game:HttpGet("https://raw.githubusercontent.com/Babyhamsta/RBLX_Scripts/main/Universal/SimpleHighlightESP.lua"))()
 
 
-local Window = lib:CreateWindow("Evade Gui")
+local Window = lib:CreateWindow("Eternal's evade GUI")
 
 
-local CharPage = Window:NewTab("Character")
-local InvePage = Window:NewTab("Inventory")
+local CharPage = Window:NewTab("Player")
 local ServerPage = Window:NewTab("Server")
 local ESPPage = Window:NewTab("ESP/Camera")
 
 
 local MainSection = CharPage:AddSection("Character")
-local InventorySection = InvePage:AddSection("Inventory")
 local ServerSection = ServerPage:AddSection("Server")
 local ESPSection = ESPPage:AddSection("ESP")
 local CamSection = ESPPage:AddSection("Camera")
@@ -105,6 +103,15 @@ MainSection:AddButton("God Mode", "Gives you god mode", function()
     Hum.Parent = Character;
 end)
 
+MainSection:AddButton("Infinite jump", "Makes you able to jump mid air", function()
+    local InfiniteJumpEnabled = true
+game:GetService("UserInputService").JumpRequest:connect(function()
+	if InfiniteJumpEnabled then
+		game:GetService"Players".LocalPlayer.Character:FindFirstChildOfClass'Humanoid':ChangeState("Jumping")
+	end
+end)
+end)
+
 MainSection:AddToggle("Loop God Mode", "Keeps god mode on", false, function(bool)
     GodMode_Enabled = bool;
 
@@ -130,61 +137,22 @@ end)
 
 
 MainSection:AddButton("Full Bright", "For users who are scared of the dark :(", function()
-    local light = Instance.new("PointLight", Character.HumanoidRootPart)
-    light.Brightness = .3
-    light.Range = 10000
 
-    Lighting.TimeOfDay = "14:00:00"
-    Lighting.FogEnd = 10000;
-    Lighting.Brightness = 2;
-    Lighting.Ambient = Color3.fromRGB(255,255,255)
-    Lighting.FogColor = Color3.fromRGB(255,255,255)
-end)
-
-MainSection:AddSlider("WalkSpeed", "Adjust WalkSpeed to be speed", 1450, 10000, 1450, true, function(val)
-    pcall(function()
-        local Character = Player.Character;
-        Character.Humanoid:SetAttribute("RealSpeed", tonumber(val));
-    end)
-end)
-
-MainSection:AddSlider("JumpPower", "Adjust JumpPower and dunk", 3, 15, 3, true, function(val)
-    pcall(function()
-        local Character = Player.Character;
-        Character.Humanoid:SetAttribute("RealJumpHeight", tonumber(val));
-    end)
-end)
-
-
-InventorySection:AddButton("Alpha Skin", "Gives you the private alpha skin", function()
-    Events.UI.Purchase:InvokeServer("Skins", "AlphaTester")
-end)
-
-
-InventorySection:AddButton("Boombox Skin", "Gives you the Boombox skin for free!", function()
-    Events.UI.Purchase:InvokeServer("Skins", "Boombox")
-end)
-
-
-InventorySection:AddButton("Dev Test Emote", "Gives you the private test emote.", function()
-    Events.UI.Purchase:InvokeServer("Emotes", "Test")
-end)
-
-
-ServerSection:AddButton("Crash Server", "Crashes the server", function()
-    local Reset = Events:FindFirstChild("Reset")
-    local Respawn = Events:FindFirstChild("Respawn")
-    while task.wait() do
-        if Reset and Respawn then
-            Reset:FireServer()
-            Respawn:FireServer()
-        end
+    local Light = game:GetService("Lighting")
+    
+    function dofullbright()
+    Light.Ambient = Color3.new(1, 1, 1)
+    Light.ColorShift_Bottom = Color3.new(1, 1, 1)
+    Light.ColorShift_Top = Color3.new(1, 1, 1)
     end
+    
+    dofullbright()
+    
+    Light.LightingChanged:Connect(dofullbright)
 end)
 
 
-
-ESPSection:AddButton("Character Highlights", "Highlights all characters to make them easier to see.", function()
+ESPSection:AddButton("Player Chams", "Makes other players visible through walls.", function()
     ESP:ClearESP();
     Highlights_Active = true;
 
